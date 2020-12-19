@@ -6,6 +6,8 @@ class Player
     @name = name
   end
 
+  attr_reader :name
+
   # asks user for input and returns the move
   def prompt
     gets.chomp
