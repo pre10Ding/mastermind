@@ -13,7 +13,7 @@ class Player
     gets.chomp
   end
 
-  def validate_input(question_to_display, valid_characters = %w[Y N], length = 1)
+  def get_input(question_to_display, valid_characters = %w[Y N], length = 1, _feedback = nil)
     input = false
     loop do
       puts question_to_display
