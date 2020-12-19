@@ -6,8 +6,11 @@ require './mastermind'
 
 VALID_COLORS = %w[R G B P O Y].freeze
 code_length = 4
+max_turns = 10
 
-computer = Computer.new
-player = Player.new
-game = Mastermind.new(player, computer, code_length)
-p game.start_game(VALID_COLORS)
+loop do
+  computer = Computer.new
+  player = Player.new
+  game = Mastermind.new(player, computer, VALID_COLORS, code_length, max_turns)
+  break unless game.start_game
+end
