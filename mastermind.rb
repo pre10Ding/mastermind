@@ -74,7 +74,7 @@ class Mastermind
       next unless feedback[:code].include?(ele)
 
       feedback[:input].delete_at(index - match_color)
-      feedback[:code].delete_at(feedback[:code].index(ele) - match_color)
+      feedback[:code].delete_at(feedback[:code].index(ele))
       match_color += 1
     end
     feedback[:match_color] = match_color
