@@ -2,41 +2,39 @@
 
 # main game logic
 class Mastermind
-  def initialize(player, ai_player, valid_colors, code_length = 4, max_turns = 10)
+  def initialize(player, valid_colors, code_length = 4, max_turns = 10)
     @player = player
-    @ai = ai_player
     @code_length = code_length
     @max_turns = max_turns
     @valid_colors = valid_colors
+  end
+
+  def setup(code_breaker, code_maker)
+    @code_breaker = code_breaker
+    @code_maker = code_maker
     @all_feedback = []
     @all_input = []
-    @code = @ai.make_code(@valid_colors, @code_length)
+    @code = @code_maker.make_code(@valid_colors, @code_length)
   end
 
   def start_game
     @max_turns.times do |turns_elapsed| # loop until guess matches or turns are done
       @all_input << validate_input('guess')
+      provide_feedback(@all_input.last.chars, @code.chars)
       if @code == @all_input.last # code broken
-        puts "Congradulations #{@player.name}! You broke the code on turn #{turns_elapsed + 1}!"
+        puts "Congradulations #{@code_breaker.name}! You broke the code on turn #{turns_elapsed + 1}!"
         break
       end
-      provide_feedback(@all_input.last.chars, @code.chars)
       puts "Game Over!\nThe code was #{@code}." unless turns_elapsed < @max_turns - 1
     end
     play_again?
   end
 
-  def validate_input(guess_or_code)
-    input = false
-    loop do
-      puts "Please enter your #{guess_or_code}. (Choose from #{@valid_colors.join} ie. \"ABBC\")"
-      input = @player.prompt.upcase
-      # subtracting sets leaves an empty if all eles in the first set exist in 2nd
-      break if input.length == @code_length && (input.chars - @valid_colors).empty?
+  private
 
-      puts "Invalid input, please enter your #{guess_or_code} again."
-    end
-    input
+  def validate_input(guess_or_code)
+    question_to_display = "Please enter your #{guess_or_code}. (Choose from #{@valid_colors.join} ie. \"ABBC\")"
+    @player.validate_input(question_to_display,@valid_colors,@code_length)
   end
 
   def provide_feedback(input, code)
@@ -94,15 +92,14 @@ class Mastermind
   end
 
   def play_again?
-    player_choice = false
-    loop do
-      puts 'Do you want to play again? (Y/N)'
-      input = @player.prompt.upcase
-      if %w[Y N].include?(input)
-        player_choice = input == 'Y'
-        break
-      end
-    end
-    player_choice
+    question_to_display = 'Do you want to play again? (Y/N)'
+    @player.validate_input(question_to_display) == 'Y'
+  end
+
+  public
+
+  def choose_game_mode
+    question_to_display = 'Would you like to play as the code breaker? (Y/N)'
+    @player.validate_input(question_to_display) == 'Y'
   end
 end
