@@ -9,6 +9,7 @@ code_length = 4
 max_turns = 10
 
 #explainatory text
+puts '---------------------------------------------------------------'
 puts 'Welcome to Mastermind, agent.'
 puts
 puts "This computer will randomly pick a 4 letter passcode from #{VALID_COLORS.join} "
@@ -24,8 +25,8 @@ puts '  1) the number of letters that are in the correct position.'
 puts '  2) the number of letters that are correct, but in the wrong '
 puts '     position.'
 puts
-puts "After #{max_turns} attempts, you will be locked out of the system, "
-puts 'and it will be GAME OVER.'
+puts "After #{max_turns} attempts, you will be locked out of the system, and it "
+puts 'will be GAME OVER.'
 puts
 puts 'Good luck!'
 puts
