@@ -7,9 +7,9 @@ class Computer
   end
 
   # returns a randomly generated 4 letter string composed of letters in valid_colors
-  def make_code(valid_colors, code_length)
+  def get_input(_question_to_display, valid_characters, length, feedback = nil)
     code = []
-    code_length.times { code << valid_colors[rand(valid_colors.length)] }
+    length.times { code << valid_characters[rand(valid_characters.length)] } if feedback.nil?
     code.join
   end
 end
