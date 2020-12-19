@@ -10,6 +10,6 @@ class Computer
   def make_code(valid_colors, code_length)
     code = []
     code_length.times { code << valid_colors[rand(valid_colors.length)] }
-    code
+    code.join
   end
 end
