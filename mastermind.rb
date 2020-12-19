@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
+require './mastermindFeedback'
 # main game logic
 class Mastermind
+  include MastermindFeedback
+
   def initialize(player, valid_colors, code_length = 4, max_turns = 10)
     @player = player
     @code_length = code_length
@@ -27,9 +30,9 @@ class Mastermind
   def start_game
     @max_turns.times do |turns_elapsed| # loop until guess matches or turns are done
       @all_input << prompt_for_guess
-      provide_feedback(@all_input.last.chars, @code.chars)
+      provide_feedback(@all_input.last.chars, @code.chars, @all_feedback)
       if @code == @all_input.last # code broken... ***NEED REFACTORING*** into Player/Computer instead
-        puts "Congradulations #{@code_breaker.name}! You broke the code on turn #{turns_elapsed + 1}!"
+        puts "Congradulations! You broke the code on turn #{turns_elapsed + 1}!"
         break
       end
       puts "Game Over!\nThe code was #{@code}." unless turns_elapsed < @max_turns - 1
@@ -42,48 +45,6 @@ class Mastermind
   def prompt_for_guess
     question_to_display = "Please enter your guess. (Choose from #{@valid_colors.join} ie. \"ABBC\")"
     @code_breaker.get_input(question_to_display, @valid_colors, @code_length, @all_feedback)
-  end
-
-  def provide_feedback(input, code)
-    feedback = {
-      match_pos: 0,
-      match_color: 0,
-      input: input,
-      code: code
-    }
-
-    @all_feedback << count_correct_pos_and_color(feedback) # count the number of correct pos
-    puts "Number of correct characters in the correct position:   #{feedback[:match_pos]}"
-    puts "Number of correct characters in the wrong position:     #{feedback[:match_color]}"
-    print_guess_history
-  end
-
-  def count_correct_pos_and_color(feedback)
-    code = feedback[:code].clone
-    match_pos = 0
-    feedback[:input].clone.each_with_index do |ele, index|
-      next if ele != code[index]
-
-      feedback[:code].delete_at(index - match_pos)
-      feedback[:input].delete_at(index - match_pos)
-      match_pos += 1
-    end
-    feedback[:match_pos] = match_pos
-    count_correct_color(feedback) # returning this so that it can be tracked in @all_feedback
-  end
-
-  def count_correct_color(feedback)
-    input = feedback[:input].clone
-    match_color = 0
-    input.each_with_index do |ele, index|
-      next unless feedback[:code].include?(ele)
-
-      feedback[:input].delete_at(index - match_color)
-      feedback[:code].delete_at(feedback[:code].index(ele))
-      match_color += 1
-    end
-    feedback[:match_color] = match_color
-    feedback # returning this so that it can be tracked in @all_feedback
   end
 
   def print_guess_history
