@@ -29,7 +29,7 @@ class Mastermind
   def validate_input(guess_or_code)
     input = false
     loop do
-      puts "Please enter your #{guess_or_code}. (ie. \"RBBG\")"
+      puts "Please enter your #{guess_or_code}. (Choose from #{@valid_colors.join} ie. \"ABBC\")"
       input = @player.prompt.upcase
       # subtracting sets leaves an empty if all eles in the first set exist in 2nd
       break if input.length == @code_length && (input.chars - @valid_colors).empty?
