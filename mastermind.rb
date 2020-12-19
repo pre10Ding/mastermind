@@ -9,19 +9,26 @@ class Mastermind
     @valid_colors = valid_colors
   end
 
+  def choose_game_mode
+    question_to_display = 'Would you like to play as the code breaker? (Y/N)'
+    @player.get_input(question_to_display) == 'Y'
+  end
+
   def setup(code_breaker, code_maker)
     @code_breaker = code_breaker
     @code_maker = code_maker
     @all_feedback = []
     @all_input = []
-    @code = @code_maker.make_code(@valid_colors, @code_length)
+    question_to_display = 'Please enter a passcode for the computer to guess.'
+    question_to_display += "\nChoose from #{@valid_colors.join}. (ie. \"ABBC\")"
+    @code = @code_maker.get_input(question_to_display,@valid_colors, @code_length)
   end
 
   def start_game
     @max_turns.times do |turns_elapsed| # loop until guess matches or turns are done
-      @all_input << validate_input('guess')
+      @all_input << prompt_for_guess
       provide_feedback(@all_input.last.chars, @code.chars)
-      if @code == @all_input.last # code broken
+      if @code == @all_input.last # code broken... ***NEED REFACTORING*** into Player/Computer instead
         puts "Congradulations #{@code_breaker.name}! You broke the code on turn #{turns_elapsed + 1}!"
         break
       end
@@ -32,9 +39,9 @@ class Mastermind
 
   private
 
-  def validate_input(guess_or_code)
-    question_to_display = "Please enter your #{guess_or_code}. (Choose from #{@valid_colors.join} ie. \"ABBC\")"
-    @player.validate_input(question_to_display,@valid_colors,@code_length)
+  def prompt_for_guess
+    question_to_display = "Please enter your guess. (Choose from #{@valid_colors.join} ie. \"ABBC\")"
+    @code_breaker.get_input(question_to_display, @valid_colors, @code_length, @all_feedback)
   end
 
   def provide_feedback(input, code)
@@ -93,13 +100,6 @@ class Mastermind
 
   def play_again?
     question_to_display = 'Do you want to play again? (Y/N)'
-    @player.validate_input(question_to_display) == 'Y'
-  end
-
-  public
-
-  def choose_game_mode
-    question_to_display = 'Would you like to play as the code breaker? (Y/N)'
-    @player.validate_input(question_to_display) == 'Y'
+    @player.get_input(question_to_display) == 'Y'
   end
 end
