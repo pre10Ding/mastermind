@@ -2,18 +2,16 @@
 
 # mastermind feedback methods
 module MastermindFeedback
-  def provide_feedback(input, code, all_feedback)
+  def provide_feedback(input, code)
     feedback = {
       match_pos: 0,
       match_color: 0,
-      input: input,
-      code: code
+      input: input.chars,
+      code: code.chars
     }
 
-    all_feedback << count_correct_pos_and_color(feedback) # count the number of correct pos
-    puts "Number of correct characters in the correct position:   #{feedback[:match_pos]}"
-    puts "Number of correct characters in the wrong position:     #{feedback[:match_color]}"
-    print_guess_history
+    count_correct_pos_and_color(feedback) # count the number of correct pos
+
   end
 
   def count_correct_pos_and_color(feedback)
