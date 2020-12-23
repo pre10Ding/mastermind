@@ -8,16 +8,11 @@ class Player
 
   attr_reader :name
 
-  # asks user for input and returns the move
-  def prompt
-    gets.chomp
-  end
-
   def get_input(question_to_display, valid_characters = %w[Y N], length = 1, _feedback = nil)
     input = false
     loop do
       puts question_to_display
-      input = prompt.upcase
+      input = gets.chomp.upcase
       # subtracting sets leaves an empty if all eles in the first set exist in 2nd
       break if input.length == length && (input.chars - valid_characters).empty?
 
@@ -25,4 +20,7 @@ class Player
     end
     input
   end
+
+  # the player doesnt have anything to reset for this game so it is empty
+  def reset; end
 end
