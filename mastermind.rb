@@ -22,15 +22,16 @@ class Mastermind
     @code_maker = code_maker
     @all_feedback = []
     @all_input = []
+    reset_both_players # for new game loops
     question_to_display = 'Please enter a passcode for the computer to guess.'
     question_to_display += "\nChoose from #{@valid_colors.join}. (ie. \"ABBC\")"
-    @code = @code_maker.get_input(question_to_display,@valid_colors, @code_length)
+    @code = @code_maker.get_input(question_to_display, @valid_colors, @code_length)
   end
 
   def start_game
     @max_turns.times do |turns_elapsed| # loop until guess matches or turns are done
       @all_input << prompt_for_guess
-      provide_feedback(@all_input.last.chars, @code.chars, @all_feedback)
+      print_feedback
       if @code == @all_input.last # code broken... ***NEED REFACTORING*** into Player/Computer instead
         puts "Congradulations! You broke the code on turn #{turns_elapsed + 1}!"
         break
@@ -42,9 +43,17 @@ class Mastermind
 
   private
 
+  def print_feedback
+    @all_feedback << provide_feedback(@all_input.last, @code)
+    puts "Number of correct characters in the correct position:   #{@all_feedback.last[:match_pos]}"
+    puts "Number of correct characters in the wrong position:     #{@all_feedback.last[:match_color]}"
+    print_guess_history
+  end
+
   def prompt_for_guess
     question_to_display = "Please enter your guess. (Choose from #{@valid_colors.join} ie. \"ABBC\")"
-    @code_breaker.get_input(question_to_display, @valid_colors, @code_length, @all_feedback)
+    matched = @all_feedback.last.nil? ? nil : [@all_feedback.last[:match_pos], @all_feedback.last[:match_color]]
+    @code_breaker.get_input(question_to_display, @valid_colors, @code_length, matched)
   end
 
   def print_guess_history
@@ -62,5 +71,10 @@ class Mastermind
   def play_again?
     question_to_display = 'Do you want to play again? (Y/N)'
     @player.get_input(question_to_display) == 'Y'
+  end
+
+  def reset_both_players
+    @code_breaker.reset
+    @code_maker.reset
   end
 end
