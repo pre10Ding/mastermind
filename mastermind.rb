@@ -5,23 +5,28 @@ require './mastermindFeedback'
 class Mastermind
   include MastermindFeedback
 
-  def initialize(player, valid_colors, code_length = 4, max_turns = 10)
+  def initialize(player, valid_colors, code_length = 4)
     @player = player
     @code_length = code_length
-    @max_turns = max_turns
     @valid_colors = valid_colors
   end
 
   def choose_game_mode
     question_to_display = 'Would you like to play as the code breaker? (Y/N)'
-    @player.get_input(question_to_display) == 'Y'
+    return true if @player.get_input(question_to_display) == 'Y'
+
+    question_to_display = 'Would you like to play as the code maker? (Y/N)'
+    return false if @player.get_input(question_to_display) == 'Y'
+
+    nil
   end
 
-  def setup(code_breaker, code_maker)
+  def setup(code_breaker, code_maker, max_turns = 10)
     @code_breaker = code_breaker
     @code_maker = code_maker
     @all_feedback = []
     @all_input = []
+    @max_turns = max_turns
     reset_both_players # for new game loops
     question_to_display = 'Please enter a passcode for the computer to guess.'
     question_to_display += "\nChoose from #{@valid_colors.join}. (ie. \"ABBC\")"
@@ -33,10 +38,10 @@ class Mastermind
       @all_input << prompt_for_guess
       print_feedback
       if @code == @all_input.last # code broken... ***NEED REFACTORING*** into Player/Computer instead
-        puts "Congradulations! You broke the code on turn #{turns_elapsed + 1}!"
+        @code_breaker.win(turns_elapsed + 1)
         break
       end
-      puts "Game Over!\nThe code was #{@code}." unless turns_elapsed < @max_turns - 1
+      @code_breaker.lose(@code) unless turns_elapsed < @max_turns - 1
     end
     play_again?
   end
@@ -45,7 +50,7 @@ class Mastermind
 
   def print_feedback
     @all_feedback << provide_feedback(@all_input.last, @code)
-    puts "Number of correct characters in the correct position:   #{@all_feedback.last[:match_pos]}"
+    puts "\nNumber of correct characters in the correct position:   #{@all_feedback.last[:match_pos]}"
     puts "Number of correct characters in the wrong position:     #{@all_feedback.last[:match_color]}"
     print_guess_history
   end
@@ -57,7 +62,7 @@ class Mastermind
   end
 
   def print_guess_history
-    puts 'Here are your guesses so far:'
+    puts 'Here are the guesses so far:'
     bar = '-' * 32
     puts "|#{bar}|\n| Turn | Guess | \u2713 Pos | \u2713 Color |\n|#{bar}|"
     @all_input.each_with_index do |guess, index|
