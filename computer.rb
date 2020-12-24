@@ -24,9 +24,16 @@ class Computer
     get_guess(feedback)
   end
 
+  def win(turns_elapsed)
+    puts "Oh no! Your code was broken on turn #{turns_elapsed}!"
+  end
+
+  def lose(code)
+    puts "Congradulations, agent! Your code #{code} was never broken!"
+  end
+
   def reset
-    @previous_inputs = []
-    @first_get = true
+    @first_get = true # resetting this will allow @previous_inputs to be repopulated
   end
 
   private
@@ -57,7 +64,7 @@ class Computer
     sleep(1)
     p '***************** Generating new guess *******************'
     sleep(1)
-    @previous_inputs << @all_guesses.first
+    @previous_inputs << @all_guesses.sample(1)[0]
     @previous_inputs.last
   end
 end
