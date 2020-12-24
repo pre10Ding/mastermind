@@ -1,0 +1,21 @@
+
+
+---------------------------------------------------------------
+
+Greetings, code maker.
+
+You will be need to create a secure 4 letter passcode from the 
+letters ABCDEF. The computer will help you test the strength of 
+your passcode by attempting to break it.
+
+The computer will be given 4 tries. After each attempt, it will
+be given 2 pieces of information:
+
+  1) the number of letters that are in the correct position.
+  2) the number of letters that are correct, but in the wrong 
+    position.
+
+After 4 attempts, the computer will be locked out of the system,
+and you will be congradulated on coming up with a secure passcode!
+
+Good luck!

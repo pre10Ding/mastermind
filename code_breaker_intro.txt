@@ -1,0 +1,23 @@
+
+
+---------------------------------------------------------------
+
+Greetings, code breaker.
+
+This computer will randomly pick a 4 letter passcode from the 
+letters ABCDEF (multiples of the same letter may be possible). 
+
+Your mission, should you choose to accept it, will be to crack 
+this code.
+
+You will be given 8 attempts. After each attempt, you will be 
+given 2 pieces of information:
+
+  1) the number of letters that are in the correct position.
+  2) the number of letters that are correct, but in the wrong 
+     position.
+
+After 8 attempts, you will be locked out of the system, and it 
+will be GAME OVER.
+
+Good luck!
