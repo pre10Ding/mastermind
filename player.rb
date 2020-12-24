@@ -21,6 +21,14 @@ class Player
     input
   end
 
+  def win(turns_elapsed)
+    puts "Congradulations! You won on turn #{turns_elapsed}!"
+  end
+
+  def lose(code)
+    puts "Game Over!\nThe code was #{code}."
+  end
+
   # the player doesnt have anything to reset for this game so it is empty
   def reset; end
 end
