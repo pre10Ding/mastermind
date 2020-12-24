@@ -5,71 +5,45 @@ require './player'
 require './mastermind'
 
 VALID_COLORS = %w[A B C D E F].freeze
-code_length = 4
-max_player_turns = 8
+CODE_LENGTH = 4
+MAX_PLAYER_TURNS = 8
 
 computer = Computer.new
 player = Player.new
-game = Mastermind.new(player, VALID_COLORS, code_length, max_player_turns)
+game = Mastermind.new(player, VALID_COLORS, CODE_LENGTH)
 code_breaker = nil
 code_maker = nil
 
-# introduction
-puts '---------------------------------------------------------------'
-puts 'Welcome to Mastermind, agent.'
-if game.choose_game_mode
-  # explainatory text as code breaker
+loop do # role selection loop to keep the player playing
+  # introductions
   puts '---------------------------------------------------------------'
-  puts 'Greetings, code breaker.'
-  puts
-  puts "This computer will randomly pick a 4 letter passcode from #{VALID_COLORS.join} "
-  puts '(multiples of the same letter may be possible). '
-  puts
-  puts 'Your mission, should you choose to accept it, will be to crack '
-  puts 'this code.'
-  puts
-  puts "You will be given #{max_player_turns} attempts. After each attempt, you will be "
-  puts 'given 2 pieces of information:'
-  puts
-  puts '  1) the number of letters that are in the correct position.'
-  puts '  2) the number of letters that are correct, but in the wrong '
-  puts '     position.'
-  puts
-  puts "After #{max_player_turns} attempts, you will be locked out of the system, and it "
-  puts 'will be GAME OVER.'
+  puts "Welcome to Mastermind, agent.\n\n"
+  game_mode = game.choose_game_mode
 
-  code_breaker = player
-  code_maker = computer
+  if game_mode # player chooses code breaker role
+    max_turns = MAX_PLAYER_TURNS
+    code_breaker = player
+    code_maker = computer
+    File.foreach('code_breaker_intro.txt') { |line| puts line }
 
-else
-  puts 'Greetings, code maker.'
-  puts
-  puts "You will be need to pick a 4 letter passcode from #{VALID_COLORS.join} for the"
-  puts 'computer to break.'
-  puts
-  puts "The computer will be given #{max_player_turns} attempts. After each "
-  puts 'attempt, it will be given 2 pieces of information:'
-  puts
-  puts '  1) the number of letters that are in the correct position.'
-  puts '  2) the number of letters that are correct, but in the wrong '
-  puts '     position.'
-  puts
-  puts "After #{max_player_turns} attempts, the computer will be locked out of the system."
-  puts 'and you will be congradualated on coming up with a such a'
-  puts 'secure passcode!'
+  elsif !game_mode.nil? # player chooses code maker role
+    max_turns = MAX_PLAYER_TURNS / 2
+    code_breaker = computer
+    code_maker = player
+    File.foreach('code_maker_intro.txt') { |line| puts line }
 
-  code_breaker = computer
-  code_maker = player
+  else
+    break # game_mode will return nil if the player doesnt want to play anymore
+  end
 
+  puts
+  puts
+  loop do # gameplay loop to stay in the same role
+    game.setup(code_breaker, code_maker, max_turns) # the computer needs to be reset every round
+    break unless game.start_game # need to add logic to go back to mode select
+  end
+  puts
+  puts
 end
 
-puts
-puts 'Good luck!'
-puts
-puts
-loop do
-  game.setup(code_breaker, code_maker) # the computer needs to be reset every round
-  break unless game.start_game # need to add logic to go back to mode select
-end
-puts
-puts 'Goodbye, agent.'
+puts 'Good work, agent! See you again next time.'
