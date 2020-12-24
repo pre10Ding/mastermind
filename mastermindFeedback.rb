@@ -11,7 +11,6 @@ module MastermindFeedback
     }
 
     count_correct_pos_and_color(feedback) # count the number of correct pos
-
   end
 
   def count_correct_pos_and_color(feedback)
